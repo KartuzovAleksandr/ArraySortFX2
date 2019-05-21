@@ -184,6 +184,7 @@ private void CreateCircle() {
         // сортировка выбором (ст-т гр. РЭА-11-17 Романов С.)
     private void SelectionSort() {
         ns=0;        
+            // находим минимальный элемент в оставшейся части массива
         for (int i = 0; i < n; i++) {
             int min = m[i]; 
             int imin = i;   
@@ -194,6 +195,7 @@ private void CreateCircle() {
                     ns++; // считаем за один шаг
                 }
             }
+                // если минимум не равен текущему, то ставим его на место
             if (i != imin) {
                 int temp = m[i];
                 m[i] = m[imin];
