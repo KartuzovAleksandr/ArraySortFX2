@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
+
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="624.0" text="ArraySortFX2 (сортировка массива несколькими методами с анимацией)" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arraysortfx2.FXMLDocumentController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="554.0" prefWidth="602.0">
+         <children>
+            <Label layoutX="204.0" layoutY="54.0" prefHeight="17.0" prefWidth="123.0" text="Размерность массива" />
+            <TextField fx:id="edit1" layoutX="332.0" layoutY="50.0" onAction="#handleButton1Action" prefHeight="25.0" prefWidth="34.0" />
+            <Button fx:id="button1" defaultButton="true" layoutX="228.0" layoutY="101.0" mnemonicParsing="false" onAction="#handleButton1Action" text="Сгенерировать массив" />
+            <Label fx:id="label1" layoutX="42.0" layoutY="170.0" prefHeight="17.0" prefWidth="527.0" text="Введите размерность (от 2 до 12) и нажмите кнопку Сгенерировать массив" textFill="#db0d35" />
+            <Label layoutX="250.0" layoutY="141.0" text="Исходный массив" />
+            <Button fx:id="button2" disable="true" layoutX="265.0" layoutY="214.0" mnemonicParsing="false" onAction="#handleButton2Action" text="Сортировка" />
+            <Label fx:id="label2" layoutX="42.0" layoutY="294.0" prefHeight="17.0" prefWidth="527.0" text="Выберите  тип сортировки и нажмите кнопку Сортировка" textFill="#da1515" />
+            <RadioButton fx:id="RadioButton1" layoutX="423.0" layoutY="209.0" mnemonicParsing="false" selected="true" text="По возрастанию">
+               <toggleGroup>
+                  <ToggleGroup fx:id="SortOrder" />
+               </toggleGroup></RadioButton>
+            <RadioButton fx:id="RadioButton2" layoutX="423.0" layoutY="234.0" mnemonicParsing="false" text="По убыванию" toggleGroup="$SortOrder" />
+            <Label layoutX="230.0" layoutY="262.0" text="Результирующий массив" />
+            <ImageView fitHeight="106.0" fitWidth="146.0" layoutX="42.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@ChuvSU_logo.jpg" />
+               </image>
+               <effect>
+                  <Blend />
+               </effect>
+            </ImageView>
+            <Label layoutX="490.0" layoutY="622.0" text="Картузов А.В. (С) 2019" textFill="#38834b">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="SortMethod" layoutX="415.0" layoutY="50.0" prefWidth="150.0">
+                <items>
+                <FXCollections fx:factory="observableArrayList">        
+                    <String fx:id="straight" fx:value="StraightSort" />
+                    <String fx:id="bubble" fx:value="BubbleSort" />
+                    <String fx:id="selection" fx:value="SelectionSort" />
+                    <String fx:id="bucket" fx:value="BucketSort" />
+                </FXCollections>                    
+                </items>
+                <value>
+                    <String fx:value="StraightSort" />
+                </value>
+            </ComboBox>
+            <AnchorPane fx:id="Animated" layoutX="-1.0" layoutY="330.0" prefHeight="66.0" prefWidth="604.0" />
+            <Label fx:id="label3" layoutX="188.0" layoutY="403.0" prefHeight="17.0" prefWidth="223.0" text="Сортировка произведена за ___ шагов" textAlignment="CENTER" textFill="#da1515" />
+            <Label layoutX="438.0" layoutY="26.0" text="Метод сортировки" />
+            <Label layoutX="405.0" layoutY="416.0" prefHeight="17.0" prefWidth="217.0" text="(С) РЭА-11-17 (рук. Картузов А.В.) 2019" textFill="#2311e8" />
+         </children></AnchorPane>
+  </content>
+</TitledPane>
