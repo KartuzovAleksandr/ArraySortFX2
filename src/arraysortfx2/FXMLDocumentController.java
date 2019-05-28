@@ -42,6 +42,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button button2; // сортировка
     @FXML
+    private Button button3; // остановить анимацию
+    @FXML
     private ComboBox<?> SortMethod; // выбор метода сортировки
     @FXML
     private String straight;
@@ -52,11 +54,16 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private String bucket;
     @FXML
+    private String heap;
+    @FXML
+    private String merge;
+    @FXML
     private AnchorPane Animated; // панель для вывода анимации сортировки
     private int MAXVALUE=50; // максимальное значение для случайных чисел
     
     Integer m[]; // объявляем пустой массив
     Integer mm[]; // для сохранения исходного (при повторной сортировки другим методом)
+    Integer workArray[]; // промежуточный массив для сортировки слиянием
     Random r=new Random(); // создаем класс для генерации случайных чисел
     int n; // размерность массива
     int np; // номер смены элементов массива (прохода, шага сортировки)
@@ -205,8 +212,81 @@ private void CreateCircle() {
             }
         }
     }
+        // пирамидальная сортировка (ст-ка гр. РЭА-11-17 Федорова М.)
+    private void HeapSort() {
+        ns=0;
+        int p;
+        for (int i = n / 2 - 1; i >= 0; i--)  
+            shiftDown(i, n);
+        for (int i = n - 1; i > 0; i--) {
+                // меняем местами элементы
+            p=m[i];
+            m[i]=m[0];
+            m[0]=p;
+            ns++;
+            shiftDown(0, i);
+        } 
+        CreateCircle(); // рисуем отсортированный массив, т.к. обмен слишком сложен
+    }    
+        // ищет листья в дереве (для пирамидальной сортировки) Федорова М.
+    private void shiftDown(int i, int n) {
+        int child;
+        int tmp;
+        for (tmp = m[i]; 2*i+1 < n; i = child) {
+            child = 2*i+1;
+            if (child != n - 1 && (m[child] < m[child + 1]))
+                child++;
+            if (tmp < m[child]) {
+                m[i] = m[child];
+                ns++;
+            }
+            else
+                break;
+        }
+        ns++;
+        m[i] = tmp;
+    }
+        // сортировка слиянием (ст-т гр. РЭА-11-17 Матвеев С.)
+    private void MergeSort(int lower, int upper) {
+        if (lower != upper) {
+            ns=0; // счетчик шагов
+            int middle = (lower + upper) / 2;
+            MergeSort(lower, middle); // рекурсия
+            MergeSort(middle + 1, upper);
+            merge(lower, middle + 1, upper);
+            CreateCircle(); // рисуем отсортированный массив, т.к. обмена элементами нет
+        }
+    }
+        // Слияние двух массивов (ст-т гр. РЭА-11-17 Матвеев С.)
+    private void merge(int lower, int middle, int upper) {
+        int i = 0;
+        int lowerBound = lower;
+        int mid = middle - 1;
+        int nn = upper - lower + 1;
+        while((lower <= mid) && (middle <= upper)) {
+            if (m[lower] < m[middle]) {
+                workArray[i++] = m[lower++];
+                ns++;
+            } else {
+                workArray[i++] = m[middle++];
+                ns++;
+            }
+        }
+        while(lower <= mid) {
+            workArray[i++] = m[lower++];
+            ns++;
+        }
+        while(middle <= upper) {
+            workArray[i++] = m[middle++];
+            ns++;
+        }
+        for(i=0; i < nn; i++) {
+            m[lowerBound+i] = workArray[i];
+            ns++;
+        }
+    }
     
-      // анимация смены элементов (partially ст-т гр. РЭА-11-17 Иванов В.)
+    // анимация смены элементов (partially ст-т гр. РЭА-11-17 Иванов В.)
     private void PlotAni(int i, int j) { // аргументы - номера для смены элементов
         // движение вправо кружка                       
                     //Instantiating TranslateTransition class   
@@ -266,9 +346,11 @@ private void CreateCircle() {
         for (int i=0; i<n; i++)  // заполняем массив случайными числами
             m[i]=r.nextInt(MAXVALUE); // случайное целое от 0 до 100
         for (int i=0; i<n; i++) // запоминаем исходный массив
-            mm[i]=m[i];
+            mm[i]=m[i]; // или System.arraycopy(m, 0, mm, 0, n);
         label1.setText(Arrays.toString(m)); // вывод исходного массива в тестовую метку label1
         button2.setDisable(false); // активизируем кнопку сортировки - массив есть !!!
+        button3.setDisable(false); // активизируем кнопку остановки анимации
+        Animated.getChildren().clear(); // чистим всю панель (возможно там есть старые кружочки)
         CreateCircle();
         sorted=false;
     }
@@ -293,6 +375,11 @@ private void CreateCircle() {
             break;
             case "BucketSort": BucketSort();
             break;
+            case "HeapSort": HeapSort();
+            break;
+            case "MergeSort": workArray=new Integer[n];
+                              MergeSort(0, n-1);
+            break;
         } 
         if (! RadioButton1.isSelected()) // кнопка RadioButton2 выбрана (отмечена)
             ReverseArray(); // инвертируем массив
@@ -302,6 +389,17 @@ private void CreateCircle() {
         st.getChildren().clear(); // чистим анимацию
         sorted=true; // массив отсортирован, но возможно пользователь выберет другой метод
     }
+
+    @FXML
+    private void handleButton3Action(ActionEvent event) { 
+        st.stop(); // останавливаем анимацию (иногда идет слишком долго)
+        st.getChildren().clear(); // чистим анимацию        
+        label2.setText(""); // чистим строку вывода
+        System.arraycopy(mm, 0, m, 0, n); // восстанавливаем исходный массив
+        CreateCircle(); // рисуем массив заново
+        sorted=false;
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
