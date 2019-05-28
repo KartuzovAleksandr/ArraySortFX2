@@ -55,6 +55,8 @@
                     <String fx:id="bucket" fx:value="BucketSort" />
                     <String fx:id="heap" fx:value="HeapSort" />                    
                     <String fx:id="merge" fx:value="MergeSort" />                    
+                    <String fx:id="insert" fx:value="InsertionSort" />                                        
+                    <String fx:id="quick" fx:value="QuickSort" />                                                            
                 </FXCollections>                    
                 </items>
                 <value>

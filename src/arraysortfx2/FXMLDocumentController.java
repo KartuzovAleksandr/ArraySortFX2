@@ -58,6 +58,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private String merge;
     @FXML
+    private String insert;
+    @FXML
+    private String quick;
+    @FXML
     private AnchorPane Animated; // панель для вывода анимации сортировки
     private int MAXVALUE=50; // максимальное значение для случайных чисел
     
@@ -246,7 +250,7 @@ private void CreateCircle() {
         ns++;
         m[i] = tmp;
     }
-        // сортировка слиянием (ст-т гр. РЭА-11-17 Матвеев С.)
+        // сортировка слиянием (ст-т гр. РЭА-11-17 Матвеев Е.)
     private void MergeSort(int lower, int upper) {
         if (lower != upper) {
             ns=0; // счетчик шагов
@@ -257,7 +261,7 @@ private void CreateCircle() {
             CreateCircle(); // рисуем отсортированный массив, т.к. обмена элементами нет
         }
     }
-        // Слияние двух массивов (ст-т гр. РЭА-11-17 Матвеев С.)
+        // Слияние двух массивов (ст-т гр. РЭА-11-17 Матвеев Е.)
     private void merge(int lower, int middle, int upper) {
         int i = 0;
         int lowerBound = lower;
@@ -286,6 +290,54 @@ private void CreateCircle() {
         }
     }
     
+        // Сортировка вставками (ст-т гр. РЭА-11-17 Сихт П.)
+    private void InsertionSort() {
+        int k;
+        ns=0;
+        for (int i=1; i<n; ++i) {
+            k=m[i]; 
+            int j=i-1;
+            while (j >= 0 && m[j] > k) { 
+                m[j+1]=m[j]; 
+                j--; 
+                ns++;
+            } 
+            m[j+1]=k; 
+            ns++;
+        }  
+        CreateCircle();
+    }
+        // Быстрая сортировка QuickSort (ст-т гр. РЭА-11-17 Львов А.)
+    private void QuickSort(int low, int high) {
+        if (low >= high)
+            return;//завершить выполнение если уже нечего делить
+            // выбрать опорный элемент
+        int middle = low + (high - low) / 2;
+        int opora = m[middle];
+            // разделить на подмассивы, который больше и меньше опорного элемента
+        int i = low, j = high;
+        while (i <= j) {
+               while (m[i] < opora) 
+                    i++;
+               while (m[j] > opora) 
+                    j--;
+                //меняем местами
+                if (i <= j) {
+                    int temp = m[i];
+                    m[i] = m[j];
+                    m[j] = temp;
+                    PlotAni(i, j); // анимация 
+                    i++;
+                    j--;
+                    ns++; // счетчик шагов
+                }
+        }
+        // вызов рекурсии для сортировки левой и правой части
+        if (low < j)
+            QuickSort(low, j);
+        if (high > i)
+            QuickSort(i, high);
+    } 
     // анимация смены элементов (partially ст-т гр. РЭА-11-17 Иванов В.)
     private void PlotAni(int i, int j) { // аргументы - номера для смены элементов
         // движение вправо кружка                       
@@ -380,6 +432,10 @@ private void CreateCircle() {
             case "MergeSort": workArray=new Integer[n];
                               MergeSort(0, n-1);
             break;
+            case "InsertionSort": InsertionSort();
+            break;
+            case "QuickSort": ns=0;
+                              QuickSort(0, n-1);
         } 
         if (! RadioButton1.isSelected()) // кнопка RadioButton2 выбрана (отмечена)
             ReverseArray(); // инвертируем массив
